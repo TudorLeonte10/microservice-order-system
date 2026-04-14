@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace OrderService.Domain.Enums
+{
+    public enum OrderStatus
+    {
+        Placed,
+        Paid,
+        Shipped,
+        Cancelled
+    }
+}

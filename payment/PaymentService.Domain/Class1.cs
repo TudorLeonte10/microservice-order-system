@@ -1,4 +1,4 @@
-﻿namespace InventoryService.Domain
+﻿namespace PaymentService.Domain
 {
     public class Class1
     {

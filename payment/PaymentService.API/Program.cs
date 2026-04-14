@@ -1,17 +1,16 @@
-using InventoryService.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using PaymentService.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<InventoryDbContext>(options =>
+builder.Services.AddDbContext<PaymentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -20,5 +19,3 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.Run();
-
-

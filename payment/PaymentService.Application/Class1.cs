@@ -1,4 +1,4 @@
-﻿namespace OrderService.Application
+﻿namespace PaymentService.Application
 {
     public class Class1
     {
