@@ -1,4 +1,6 @@
-﻿using OrderService.Application.OrderItems.Dtos;
+﻿using OrderService.Application.Abstractions;
+using OrderService.Application.Exceptions;
+using OrderService.Application.OrderItems.Dtos;
 using OrderService.Application.Orders.Dtos;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Repositories;
@@ -10,9 +12,12 @@ namespace OrderService.Application.Orders.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        public OrderService(IOrderRepository orderRepository)
+        private readonly IInventoryClient _inventoryClient;
+
+        public OrderService(IOrderRepository orderRepository, IInventoryClient inventoryClient)
         {
             _orderRepository = orderRepository;
+            _inventoryClient = inventoryClient;
         }
 
         public async Task<Guid> CreateOrder(CreateOrderRequest request)
@@ -21,7 +26,12 @@ namespace OrderService.Application.Orders.Services
 
             foreach (var item in request.Items)
             {
-                order.AddItem(item.ProductId, item.ProductName, item.Quantity, item.Price);
+                var product = await _inventoryClient.GetProductByIdAsync(item.ProductId);
+
+                if (product == null)
+                    throw new NotFoundException($"Product with ID {item.ProductId} not found.");
+
+                order.AddItem(product.Id, product.Name, item.Quantity, product.Price);
             }
 
             await _orderRepository.AddOrderAsync(order);

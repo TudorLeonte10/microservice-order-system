@@ -23,6 +23,7 @@ namespace InventoryService.Infrastructure.Persistence
                 entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
                 entity.Property(e => e.StockQuantity).IsRequired();
                 entity.Property(e => e.ReservedQuantity).IsRequired();
+                entity.Property(e => e.RowVersion).IsRowVersion();
             });
         }
     }

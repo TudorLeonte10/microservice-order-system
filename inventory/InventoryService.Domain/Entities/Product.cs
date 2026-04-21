@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InventoryService.Domain.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,6 +12,7 @@ namespace InventoryService.Domain.Entities
         public decimal Price { get; private set; }
         public int StockQuantity { get; private set; }
         public int ReservedQuantity { get; private set; }
+        public byte[] RowVersion { get; private set; } = Array.Empty<byte>();
 
         public Product(string name, decimal price, int stockQuantity) 
         { 
@@ -29,7 +31,7 @@ namespace InventoryService.Domain.Entities
         public void ReserveStock(int quantity)
         {
             if (!HasSufficientStock(quantity))
-                throw new InvalidOperationException("Insufficient stock to reserve.");
+                throw new InsufficientStockException("Insufficient stock to reserve.");
             ReservedQuantity += quantity;
         }
     }

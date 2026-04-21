@@ -1,5 +1,8 @@
+using OrderService.API;
 using OrderService.Application;
+using OrderService.Application.Abstractions;
 using OrderService.Infrastructure;
+using OrderService.Infrastructure.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,16 @@ builder.Services.AddControllers();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
+
+builder.Services.AddHttpClient<IInventoryClient, InventoryClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["InventoryService:BaseUrl"]!);
+});
+
+builder.Services.AddHttpClient<IPaymentClient, PaymentClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["PaymentService:BaseUrl"]!);
+});
 
 var app = builder.Build();
 
@@ -23,6 +36,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseCors(op => op.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.MapControllers();
 

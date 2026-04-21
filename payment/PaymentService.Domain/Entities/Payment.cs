@@ -1,4 +1,5 @@
 ﻿using PaymentService.Domain.Enums;
+using PaymentService.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,19 +21,24 @@ namespace PaymentService.Domain.Entities
             Status = PaymentStatus.Pending;
         }
 
-        public void MarkAsCompleted()
+        public static Payment AddPayment(Guid orderId, decimal amount)
         {
+            return new Payment(orderId, amount);
+        }
+
+        public void Pay()
+        {
+            if(Status != PaymentStatus.Pending)
+                throw new InvalidPaymentStatusException("Payment can only be processed if it is in pending status.");
+
             Status = PaymentStatus.Completed;
         }
 
-        public void MarkAsFailed()
+        public void Fail()
         {
+            if (Status != PaymentStatus.Pending)
+                throw new InvalidPaymentStatusException("Payment can only be failed if it is in pending status.");
             Status = PaymentStatus.Failed;
-        }
-
-        public void MarkAsRefunded()
-        {
-            Status = PaymentStatus.Refunded;
         }
     }
 }

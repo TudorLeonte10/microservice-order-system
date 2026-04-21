@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderService.Application.Abstractions;
 using OrderService.Domain.Repositories;
+using OrderService.Infrastructure.Clients;
 using OrderService.Infrastructure.Persistance;
 using OrderService.Infrastructure.Repositories;
 using System;

@@ -7,6 +7,7 @@ namespace OrderService.Domain.Enums
     public enum OrderStatus
     {
         Placed,
+        Confirmed,
         Paid,
         Shipped,
         Cancelled

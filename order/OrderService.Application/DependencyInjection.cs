@@ -11,6 +11,8 @@ namespace OrderService.Application
         public static void AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IOrderService, Orders.Services.OrderService>();
+            services.AddScoped<IConfirmOrderService, ConfirmOrderService>();
+            services.AddScoped<IOrderPaymentService, OrderPaymentService>();
         }
     }
 }

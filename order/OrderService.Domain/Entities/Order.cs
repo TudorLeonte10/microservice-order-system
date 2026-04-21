@@ -1,4 +1,5 @@
 ﻿using OrderService.Domain.Enums;
+using OrderService.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,13 +37,24 @@ namespace OrderService.Domain.Entities
             }
         }
 
+        public void Confirm()
+        {
+            if(Items == null || !Items.Any())
+                throw new EmptyItemCollectionException("Cannot confirm an order without any items.");
+
+            if (Status != OrderStatus.Placed)
+                throw new InvalidStatusChangedException("Only placed orders can be confirmed.");
+
+            Status = OrderStatus.Confirmed;
+        }
+
         public void MarkAsPaid()
         {
             if(Items == null || !Items.Any())
-                throw new InvalidOperationException("Cannot mark an order as paid without any items.");
+                throw new InvalidStatusChangedException("Cannot mark an order as paid without any items.");
 
-            if (Status != OrderStatus.Placed)
-                throw new InvalidOperationException("Only placed orders can be marked as paid.");
+            if (Status != OrderStatus.Confirmed)
+                throw new InvalidStatusChangedException("Only confirmed orders can be marked as paid.");
             
             Status = OrderStatus.Paid;
         }
@@ -50,14 +62,14 @@ namespace OrderService.Domain.Entities
         public void MarkAsShipped()
         {
             if (Status != OrderStatus.Paid)
-                throw new InvalidOperationException("Only paid orders can be marked as shipped.");
+                throw new InvalidStatusChangedException("Only paid orders can be marked as shipped.");
             Status = OrderStatus.Shipped;
         }
 
         public void Cancel()
         {
             if (Status == OrderStatus.Shipped)
-                throw new InvalidOperationException("Cannot cancel an order that has already been shipped.");
+                throw new InvalidStatusChangedException("Cannot cancel an order that has already been shipped.");
             Status = OrderStatus.Cancelled;
         }
     }

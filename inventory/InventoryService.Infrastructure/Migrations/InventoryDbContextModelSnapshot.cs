@@ -39,6 +39,12 @@ namespace InventoryService.Infrastructure.Migrations
                     b.Property<int>("ReservedQuantity")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
