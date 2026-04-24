@@ -1,6 +1,7 @@
 using InventoryService.API;
 using InventoryService.Application;
 using InventoryService.Infrastructure;
+using InventoryService.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddApplication();
 
 var app = builder.Build();
 
+
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -22,6 +25,12 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Inventory Service API v1");
         options.RoutePrefix = string.Empty;
     });
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<InventoryDbContext>();
+    dbContext.Database.EnsureCreated();
 }
 
 app.UseCors(op => op.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

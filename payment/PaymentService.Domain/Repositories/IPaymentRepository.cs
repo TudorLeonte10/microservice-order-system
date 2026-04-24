@@ -10,5 +10,6 @@ namespace PaymentService.Domain.Repositories
         Task AddPayment(Payment payment);
         Task SaveChangesAsync();
         Task<Payment?> GetPaymentByIdAsync(Guid paymentId);
+        Task<Payment?> GetPaymentByPaymentIntentIdAsync(string paymentIntentId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using PaymentService.Domain.Entities;
 using PaymentService.Domain.Repositories;
 using PaymentService.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,6 +24,11 @@ namespace PaymentService.Infrastructure.Repositories
         public async Task<Payment?> GetPaymentByIdAsync(Guid paymentId)
         {
             return await _dbContext.Payments.FindAsync(paymentId);
+        }
+
+        public async Task<Payment?> GetPaymentByPaymentIntentIdAsync(string paymentIntentId)
+        {
+            return await _dbContext.Payments.FirstOrDefaultAsync(p => p.PaymentIntentId == paymentIntentId);
         }
 
         public async Task SaveChangesAsync()

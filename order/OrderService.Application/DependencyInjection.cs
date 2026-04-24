@@ -13,6 +13,7 @@ namespace OrderService.Application
             services.AddScoped<IOrderService, Orders.Services.OrderService>();
             services.AddScoped<IConfirmOrderService, ConfirmOrderService>();
             services.AddScoped<IOrderPaymentService, OrderPaymentService>();
+            services.AddScoped<IUpdateOrderStatus, UpdateOrderStatus>();
         }
     }
 }

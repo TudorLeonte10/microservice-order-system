@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PaymentService.Application.Abstractions;
 using PaymentService.Application.Payments.Dtos;
 using PaymentService.Application.Payments.Services;
 
@@ -10,10 +11,18 @@ namespace PaymentService.API.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly IGetPaymentByIdService _getPaymentService;
-        public PaymentController(IPaymentService paymentService, IGetPaymentByIdService getPaymentService)
+        private readonly IStripeWebhookService _stripeWebhookService;
+        private readonly ILogger<PaymentController> _logger;
+        public PaymentController(
+            IPaymentService paymentService,
+            IGetPaymentByIdService getPaymentService,
+            IStripeWebhookService stripeWebhookService,
+            ILogger<PaymentController> logger)
         {
             _paymentService = paymentService;
             _getPaymentService = getPaymentService;
+            _stripeWebhookService = stripeWebhookService;
+            _logger = logger;
         }
 
         [HttpGet("{paymentId}")]
@@ -33,5 +42,23 @@ namespace PaymentService.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("webhook")]
+        public async Task<IActionResult> StripeWebhook()
+        {
+            try
+            {
+                var payload = await new StreamReader(Request.Body).ReadToEndAsync();
+                var signature = Request.Headers["Stripe-Signature"];
+
+                await _stripeWebhookService.HandleWebhookAsync(payload, signature);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing Stripe webhook");
+                return StatusCode(500, ex.Message);
+            }
+        }   
     }
 }

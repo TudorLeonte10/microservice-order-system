@@ -36,8 +36,10 @@ namespace OrderService.Application.Orders.Services
                 CreatedAt = order.CreatedAt,
                 Items = order.Items.Select(i => new OrderItemResponse
                 {
+                    Id = i.Id,
                     ProductId = i.ProductId,
                     Quantity = i.Quantity,
+                    ProductName = i.ProductName,
                     Price = i.Price
                 }).ToList()
             };

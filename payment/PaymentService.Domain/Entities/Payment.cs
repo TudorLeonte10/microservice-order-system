@@ -12,18 +12,20 @@ namespace PaymentService.Domain.Entities
         public Guid OrderId { get; private set; }
         public decimal Amount { get; private set; }
         public PaymentStatus Status { get; private set; }
+        public string PaymentIntentId { get; private set; }
 
-        public Payment(Guid orderId, decimal amount)
+        public Payment(Guid orderId, decimal amount, string paymentIntentId)
         {
             Id = Guid.NewGuid();
             OrderId = orderId;
             Amount = amount;
             Status = PaymentStatus.Pending;
+            PaymentIntentId = paymentIntentId;
         }
 
-        public static Payment AddPayment(Guid orderId, decimal amount)
+        public static Payment AddPayment(Guid orderId, decimal amount, string paymentIntentId)
         {
-            return new Payment(orderId, amount);
+            return new Payment(orderId, amount, paymentIntentId);
         }
 
         public void Pay()

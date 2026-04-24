@@ -12,12 +12,14 @@ namespace OrderService.API.Controllers
         private readonly IOrderService _orderService;
         private readonly IConfirmOrderService _confirmService;
         private readonly IOrderPaymentService _orderPaymentService;
+        private readonly IUpdateOrderStatus _updateOrderStatus;
 
-        public OrdersController(IOrderService orderService, IConfirmOrderService confirmService, IOrderPaymentService orderPaymentService)
+        public OrdersController(IOrderService orderService, IConfirmOrderService confirmService, IOrderPaymentService orderPaymentService, IUpdateOrderStatus updateOrderStatus)
         {
             _orderService = orderService;
             _confirmService = confirmService;
             _orderPaymentService = orderPaymentService;
+            _updateOrderStatus = updateOrderStatus;
         }
 
         [HttpGet("{id}")]
@@ -52,6 +54,13 @@ namespace OrderService.API.Controllers
         {
             var order = await _orderPaymentService.PayForOrder(id);
             return Ok(order);
+        }
+
+        [HttpPost("{id}/mark-as-paid")]
+        public async Task<IActionResult> MarkAsPaid([FromRoute] Guid id)
+        {
+            await _updateOrderStatus.UpdateStatus(id);
+            return Ok();
         }
     }
 }

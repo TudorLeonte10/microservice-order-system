@@ -2,6 +2,7 @@
 using OrderService.Application.Exceptions;
 using OrderService.Application.OrderItems.Dtos;
 using OrderService.Application.Orders.Dtos;
+using OrderService.Domain.Enums;
 using OrderService.Domain.Exceptions;
 using OrderService.Domain.Repositories;
 using System;
@@ -40,18 +41,17 @@ namespace OrderService.Application.Orders.Services
             if (!success)
                 throw new PaymentException("Payment processing failed.");
 
-            order.MarkAsPaid();
-            await _orderRepository.SaveChangesAsync();
-
             return new OrderResponse
             {
                 Id = order.Id,
-                Status = order.Status.ToString(),
+                Status = OrderStatus.Paid.ToString(),
                 CreatedAt = order.CreatedAt,
                 Items = order.Items.Select(i => new OrderItemResponse
                 {
+                    Id = i.Id,
                     ProductId = i.ProductId,
                     Quantity = i.Quantity,
+                    ProductName = i.ProductName,
                     Price = i.Price
                 }).ToList()
             };

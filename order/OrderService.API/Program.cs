@@ -3,6 +3,7 @@ using OrderService.Application;
 using OrderService.Application.Abstractions;
 using OrderService.Infrastructure;
 using OrderService.Infrastructure.Clients;
+using OrderService.Infrastructure.Persistance;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,13 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty;  
     });
 }
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+    dbContext.Database.EnsureCreated();
+}
+
 
 app.UseCors(op => op.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseMiddleware<ExceptionMiddleware>();

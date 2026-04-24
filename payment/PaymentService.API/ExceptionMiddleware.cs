@@ -28,23 +28,23 @@ namespace PaymentService.API
             switch (exception)
             {
                 case NotFoundException notFoundEx:
-                    WriteErrorReponse(context, StatusCodes.Status404NotFound, notFoundEx.Message);
+                    await WriteErrorReponse(context, StatusCodes.Status404NotFound, notFoundEx.Message);
                     break;
                 case InvalidPaymentStatusException invalidStatusEx:
-                    WriteErrorReponse(context, StatusCodes.Status400BadRequest, invalidStatusEx.Message);
+                    await WriteErrorReponse(context, StatusCodes.Status400BadRequest, invalidStatusEx.Message);
                     break;
                 default:
-                    WriteErrorReponse(context, StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+                    await WriteErrorReponse(context, StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
                     break;
             }
         }
 
-        private void WriteErrorReponse(HttpContext context, int statusCode, string message)
+        private async Task WriteErrorReponse(HttpContext context, int statusCode, string message)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
             var errorResponse = new { error = message };
-            context.Response.WriteAsJsonAsync(errorResponse);
+            await context.Response.WriteAsJsonAsync(errorResponse);
         }
     }
 }
